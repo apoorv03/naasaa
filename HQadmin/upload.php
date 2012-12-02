@@ -72,7 +72,7 @@ enctype="multipart/form-data">
   <form action="upload_logbook1.php" method="post"
 enctype="multipart/form-data">
    <p>
-  <label for="file">Logboos:</label>
+  <label for="file">Logbook:</label>
   <input type="file" name="file" id="file" />
    </p>
    <p>

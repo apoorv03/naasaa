@@ -146,7 +146,7 @@ if ($productCount > 0) {
         data.addColumn('string', 'Category');
         data.addColumn('string', 'Manufacturer');
         data.addColumn('number', 'quantity');
-        // data.addColumn('string', 'Edit/Delete');
+        data.addColumn('string', 'Edit/Delete');
       data.addRows([
         <?php
 
@@ -170,9 +170,9 @@ if ($productCount > 0) {
                  $price . ',' . 
                  '\'' . $category . '\'' . ',' . 
                  '\'' . $Manufacturer . '\'' . ',' . 
-                 $current . '],
-                 '; 
-                  // , <a href=\'inventory_edit.php?pid=$id\'>edit</a> &bull; <a href=\'inventory_list.php?deleteid=$id\'>delete</a> 
+                 $current . ',' .
+                 "\"<a href='inventory_edit.php?pid=$id'>edit</a>  <a href='inventory_list.php?deleteid=$id'>delete</a>\"
+                 " . '],'; 
               }
           }
           echo  $product_list ;
@@ -180,8 +180,16 @@ if ($productCount > 0) {
       ]);
 
       // Instantiate and draw our table, passing in some options.
-      var table = new google.visualization.Table(document.getElementById('table_div'));
-      table.draw(data, {showRowNumber: false});
+      var table = new google.visualization.Table(document.getElementById('barformat_div'));
+      var formatter = new google.visualization.ArrowFormat({width: 30, base:2000});
+      formatter.format(data, 5); // Apply formatter to sixth column
+  
+  table.draw(data, {allowHtml: true, showRowNumber: false});
+
+       // set the width of the column with the title "Name" to 100px
+     var title = "Name";
+     var width = "200px";
+     $('.google-visualization-table-th:contains(' + title + ')').css('width', width);
     }
     </script>
 </head>
@@ -200,7 +208,7 @@ if ($productCount > 0) {
     <div align="right" style="margin-right:32px;"><a href="inventory_list.php#inventoryForm">+ Add New Inventory Item</a></div>
 <div align="left" style="margin-left:24px;">
       <h2>Inventory list</h2>
-      <div id='table_div'></div>
+      <div id='barformat_div'></div>
        <?php 
         // echo $product_list; 
        ?>
