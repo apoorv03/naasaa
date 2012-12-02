@@ -30,11 +30,9 @@ ini_set('display_errors', '1');
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Inventory List</title>
+<title>Upload</title>
  <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<!--
-<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
--->
+
 </head>
 
 <body>
@@ -52,7 +50,6 @@ enctype="multipart/form-data">
   <input type="file" name="file" id="file" />
    </p>
    <p>
-     
      <input type="submit" name="submit" value="Submit" />
      <br />
   </p>

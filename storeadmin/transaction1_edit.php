@@ -95,15 +95,12 @@ if (isset($_GET['pid'])) {
     if ($productCount > 0) {
 	    while($row = mysql_fetch_array($sql)){ 
              
-			 
-			 
+				 
 			 $Transaction_ID = $row["Transaction_ID"];
 			 $Cashier_ID = $row["Cashier_ID"];
 			 $Barcode = $row["Barcode"];
 			 $Unit_Sold = $row["Unit_Sold"];
 			 $Date = $row["Date"];
-			 
-			 
 			 
         }
     } else {

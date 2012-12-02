@@ -182,7 +182,10 @@ if ($existCount == 0) { // evaluate the count
        <a href="lcd.php">Mapping of LCD </a>
        <br/>
        <a href="endofday.php">End of day</a>
+       <br>
+       <a href="analytics.php">Analytics</a>
       </p>
+      
 <form><input type="button" value="End Of Day" onclick="window.location='?download';"></form> 
 <form><input type="button" value="Clear " onclick="window.location='?Clear';"></form> 
 <form><input type="button" value="Logbook " onclick="window.location='?Logbook';"></form> 
