@@ -37,7 +37,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Admin Log In </title>
- <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+ <link href="../bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 <!--
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
 -->

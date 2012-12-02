@@ -122,12 +122,77 @@ if ($productCount > 0) {
  <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <!--
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
--->
+--><!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['table']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawTable);
+
+
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawTable() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Barcode');
+        data.addColumn('string', 'Name');
+        data.addColumn('number', 'Price');
+        data.addColumn('string', 'Category');
+        data.addColumn('string', 'Manufacturer');
+        data.addColumn('number', 'quantity');
+        // data.addColumn('string', 'Edit/Delete');
+      data.addRows([
+        <?php
+
+          $product_list = '';
+          $sql = mysql_query("SELECT * FROM Inventory ");
+          $productCount = mysql_num_rows($sql); // count the output amount
+          if ($productCount > 0) {
+            while($row = mysql_fetch_array($sql)){ 
+                 $id = $row["Barcode"];
+                 $product_name = $row["Product_Name"];
+                 $replace[] = ",";
+                 $product_name2 = str_replace("'" , "" , $product_name);
+                 $category = $row["Category"];
+                 $Manufacturer = $row["Manufacturer"];
+                 $price = $row["Cost_Price"];
+                 $current = $row["Current_Stock"];
+
+                 $product_list .= '[' . 
+                 $id . ',' . 
+                 '\''  . $product_name2 . '\'' . ',' . 
+                 $price . ',' . 
+                 '\'' . $category . '\'' . ',' . 
+                 '\'' . $Manufacturer . '\'' . ',' . 
+                 $current . '],
+                 '; 
+                  // , <a href=\'inventory_edit.php?pid=$id\'>edit</a> &bull; <a href=\'inventory_list.php?deleteid=$id\'>delete</a> 
+              }
+          }
+          echo  $product_list ;
+        ?>
+      ]);
+
+      // Instantiate and draw our table, passing in some options.
+      var table = new google.visualization.Table(document.getElementById('table_div'));
+      table.draw(data, {showRowNumber: false});
+    }
+    </script>
 </head>
 
 <body>
 	
 <div align="center" id="mainWrapper">
+
+  <!--Div that will hold the pie chart-->
+    
+
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
   <?php include_once("../template_header.php");?>
@@ -135,7 +200,10 @@ if ($productCount > 0) {
     <div align="right" style="margin-right:32px;"><a href="inventory_list.php#inventoryForm">+ Add New Inventory Item</a></div>
 <div align="left" style="margin-left:24px;">
       <h2>Inventory list</h2>
-      <?php echo $product_list; ?>
+      <div id='table_div'></div>
+       <?php 
+        // echo $product_list; 
+       ?>
     </div>
   	<form><input type="button" value="Download This Inventory" onclick="window.location='?download';"></form> 
 	<?php
