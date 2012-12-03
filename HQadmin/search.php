@@ -26,74 +26,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ?>
 
-<?php 
-$barcode_list="";
-$product_list="";
-$price_list="";
-$category_list="";
-$manufacturer_list="";
-// Parse the form data and add inventory item to the system
-if (isset($_POST['button'])) {
-	$barcode_list = "";
-  $product_name = mysql_real_escape_string($_POST['product_name']);
-	$Barcode = mysql_real_escape_string($_POST['Barcode']);
-	$Category = mysql_real_escape_string($_POST['Category']);
-	$Manufacturer = mysql_real_escape_string($_POST['Manufacturer']);
-	
-  $query = "SELECT * FROM Inventory WHERE Barcode > 0 ";
-  if (strlen($product_name) > 0){
-    $query .= " AND Product_Name like '%$product_name%' ";
-  }
-  if (strlen($Barcode) > 0){
-    $query .= " AND Barcode = $Barcode ";
-  }
-  if (strlen($Category) > 0){
-    $query .= " AND Category like '%$Category%' ";
-  }
-  if (strlen($Manufacturer) > 0){
-    $query .= " AND Manufacturer like '%$Manufacturer%' ";
-  }
-	// See if that product name is an identical match to another product in the system
-	$sql = mysql_query($query);
-	$productMatch = mysql_num_rows($sql); // count the output amount
-  if ($productMatch > 0) {
-		while($row = mysql_fetch_array($sql)){ 
-			$id1 = $row["Barcode"];
-			 $product_name1 = $row["Product_Name"];
-			 $category1 = $row["Category"];
-			 $Manufacturer1 = $row["Manufacturer"];
-			 $price1 = $row["Cost_Price"];
-			 $current1 = $row["Current_Stock"];
-			 
-			 
-		
-		$barcode_list .= "Product ID: $id1 - <strong>$product_name1</strong> - $$price1 - $category1 - $Manufacturer1 - $current1   <br />";
-		
-	}
-	}else {
-	$sql = mysql_query("SELECT * FROM Inventory WHERE  Product_Name ='$product_name' ");
-	$productMatch = mysql_num_rows($sql); // count the output amount
-    if ($productMatch > 0) {
-		
-		while($row = mysql_fetch_array($sql)){ 
-			$id2 = $row["Barcode"];
-			 $product_name2 = $row["Product_Name"];
-			 $category2 = $row["Category"];
-			 $Manufacturer2 = $row["Manufacturer"];
-			 $price2 = $row["Cost_Price"];
-			 $current2 = $row["Current_Stock"];
-			 
-		
-		$barcode_list .= "Product ID: $id2 - <strong>$product_name2</strong> - $$price2 - $category2 - $Manufacturer2 - $current2 <br />";
-		
-	   }
-	  }
-  }
-}
-?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Search Result</title>
@@ -101,6 +35,103 @@ if (isset($_POST['button'])) {
 <!--
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
 -->
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    <?php
+    if (isset($_POST['button'])) {
+    ?>
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['table']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawTable);
+      
+    <?php 
+        }
+    ?>
+
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawTable() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Barcode');
+        data.addColumn('string', 'Name');
+        data.addColumn('number', 'Price');
+        data.addColumn('string', 'Category');
+        data.addColumn('string', 'Manufacturer');
+        data.addColumn('number', 'quantity');
+      data.addRows([
+        <?php
+            $barcode_list="";
+              $product_list="";
+              $price_list="";
+              $category_list="";
+              $manufacturer_list="";
+              $product_name = mysql_real_escape_string($_POST['product_name']);
+              $Barcode = mysql_real_escape_string($_POST['Barcode']);
+              $Category = mysql_real_escape_string($_POST['Category']);
+              $Manufacturer = mysql_real_escape_string($_POST['Manufacturer']);
+              
+              $query = "SELECT * FROM Inventory WHERE Barcode > 0 ";
+              if (strlen($product_name) > 0){
+                $query .= " AND Product_Name like '%$product_name%' ";
+              }
+              if (strlen($Barcode) > 0){
+                $query .= " AND Barcode = $Barcode ";
+              }
+              if (strlen($Category) > 0){
+                $query .= " AND Category like '%$Category%' ";
+              }
+              if (strlen($Manufacturer) > 0){
+                $query .= " AND Manufacturer like '%$Manufacturer%' ";
+              }
+
+              $sql = mysql_query($query);
+              $productMatch = mysql_num_rows($sql); // count the output amount
+              if ($productMatch > 0) {
+                while($row = mysql_fetch_array($sql)){ 
+                  $id1 = $row["Barcode"];
+                   $product_name1 = $row["Product_Name"];
+                   $product_name1 = str_replace("'", "", $product_name1);
+                   $category1 = $row["Category"];
+                   $Manufacturer1 = $row["Manufacturer"];
+                   $price1 = $row["Cost_Price"];
+                   $current1 = $row["Current_Stock"];
+                   
+                   $product_list .= '[' . 
+                   $id1 . ',' . 
+                  '\' <b> '  . $product_name1 . ' </b>\'' . ',' . 
+                  $price1 . ',' . 
+                  '\'' . $category1 . '\'' . ',' . 
+                  '\'' . $Manufacturer1 . '\'' . ',' . 
+                  $current1 . ',' .
+                  '],'; 
+                }
+              }
+          echo  $product_list ;
+        ?>
+      ]);
+
+      // Instantiate and draw our table, passing in some options.
+      var table = new google.visualization.Table(document.getElementById('barformat_div'));
+      var formatter = new google.visualization.ArrowFormat({width: 30, base:2000});
+      formatter.format(data, 5); // Apply formatter to sixth column
+  
+  table.draw(data, {allowHtml: true, showRowNumber: false});
+
+       // set the width of the column with the title "Name" to 100px
+     var title = "Name";
+     var width = "200px";
+     $('.google-visualization-table-th:contains(' + title + ')').css('width', width);
+    }
+    </script>
+
+
+
 </head>
 
 <body>
@@ -112,7 +143,10 @@ if (isset($_POST['button'])) {
     
 <div align="left" style="margin-left:24px;">
       <h2>Search list</h2>
-      <?php echo $barcode_list; ?>
+      <div id='barformat_div'></div>
+      <?php 
+      // echo $barcode_list; 
+      ?>
     </div>
     <hr />
     <a name="inventoryForm" id="inventoryForm"></a>
