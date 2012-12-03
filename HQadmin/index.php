@@ -48,6 +48,8 @@ if ($existCount == 0) { // evaluate the count
       <a href="upload.php">Updates </a>
       <br />
       <a href="search.php">Search </a>
+      <br>
+       <a href="analytics.php">Analytics</a>
       </p>
     </div>
     <br />
