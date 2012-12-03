@@ -80,6 +80,154 @@ ini_set('display_errors', '1');
         chart.draw(data, options);
       }
     </script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["geochart"]});
+      google.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          
+          <?php
+          $sql2 = mysql_query(
+            "SELECT sum(a.revenue) as rev, b.country FROM 
+
+              (select * from shopPerformance) a, 
+              (select * from shop) b
+              where a.shopID = b.shopID
+              group by country
+              order by rev desc");
+          $output = "['Country', 'Revenue'],";
+          $productCount = mysql_num_rows($sql); // count the output amount
+
+          if ($productCount > 0) {
+            
+            while( $row = mysql_fetch_array($sql2)){
+                $rev = $row["rev"];
+                $country = $row["country"];
+                $output .= '[' .
+                '\''  . $country . '\'' . ',' . 
+                $rev .
+                '],';
+            }
+            echo $output;
+          } else{
+            echo '["No Shops in Countries",     1]';  
+          }
+          ?>
+        ]);
+
+        var options = {
+          title: 'Highest Revenue Countries'
+        };
+        var chart = new google.visualization.GeoChart(document.getElementById('topCountriesChart'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawColumnChart);
+      function drawColumnChart() {
+        var data = google.visualization.arrayToDataTable([
+          
+          <?php
+          $sql3 = mysql_query(
+            "SELECT concat(b.name, \" \", b.country) as country, 
+            sum(a.revenue) as rev, 
+            sum(a.cost) as costs,
+            sum(a.profits) as profit
+            FROM 
+              (select * from shopPerformance) a, 
+              (select * from shop) b
+            where a.shopID = b.shopID
+            group by name
+            ");
+          $output = "['Shop Name', 'Revenue', 'Cost', 'Profits'],";
+          $productCount = mysql_num_rows($sql); // count the output amount
+
+          if ($productCount > 0) {
+            
+            while( $row = mysql_fetch_array($sql3)){
+                $rev = $row["rev"];
+                $country = $row["country"];
+                $profits = $row["profit"];
+                $cost = $row["costs"];
+                $output .= '[' .
+                '\''  . $country . '\'' . ',' . 
+                $rev . ',' . 
+                $cost . ',' . 
+                $profits . ',' .
+                '],';
+            }
+            echo $output;
+          } else{
+            echo '["No Shops in Countries",     1]';  
+          }
+          ?>
+        ]);
+
+        var options = {
+          title: 'Revenue Distribution by Shops'
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('topShops'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawColumnChart2);
+      function drawColumnChart2() {
+        var data = google.visualization.arrayToDataTable([
+          
+          <?php
+          $sql3 = mysql_query(
+            "SELECT concat(b.name, \" \", b.country) as country, 
+            sum(a.profits) as profit1,
+            sum(c.profits) as profit2,
+            sum(d.profits) as profit3
+            FROM 
+              (select * from shopPerformance where month =7) a,
+              (select * from shopPerformance where month =8) c,
+             (select * from shopPerformance where month =9) d,
+
+              (select * from shop) b
+            where a.shopID = b.shopID 
+            and c.shopID = d.shopID 
+            and b.shopID = c.shopID
+            group by name
+            ");
+          $output = "['Shop Name', 'July', 'August', 'September'],";
+          $productCount = mysql_num_rows($sql); // count the output amount
+
+          if ($productCount > 0) {
+            
+            while( $row = mysql_fetch_array($sql3)){
+                $country = $row["country"];
+                $profit1 = $row["profit1"];
+                $profit2 = $row["profit2"];
+                $profit3 = $row["profit3"];
+                $output .= '[' .
+                '\''  . $country . '\'' . ',' . 
+                $profit1 . ',' . 
+                $profit2 . ',' . 
+                $profit3 . ',' .
+                '],';
+            }
+            echo $output;
+          } else{
+            echo '["No Shops in Countries",     1]';  
+          }
+          ?>
+        ]);
+
+        var options = {
+          title: 'Profit Distribution by Months'
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('monthShops'));
+        chart.draw(data, options);
+      }
+    </script>
+
 </html>
 </head>
 
@@ -96,7 +244,10 @@ ini_set('display_errors', '1');
 <h2> Dynamic Strategy Charts </h2><br><br>
 <h3> Geo Distribution of Revenue </h3>
  <div id="topCountriesChart" style="width: 900px; height: 500px;"></div>
-
+ <br><br>
+ <div id="monthShops" style="width: 900px; height: 500px;"></div>
+ <br><br>
+ <div id="topShops" style="width: 900px; height: 500px;"></div>
   <?php include_once("../template_footer.php");?>
 </div>
 

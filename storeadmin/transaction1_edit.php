@@ -1,8 +1,3 @@
-<!-- Transaction1_edit.php
-line 46-55
-line 70-85
--->
-
 <?php
 
 session_start();

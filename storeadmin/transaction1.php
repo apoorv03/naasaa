@@ -1,8 +1,3 @@
-<!--Transaction1.php
-Solve Restock Bug
-Line 61-75
--->
-
 <?php
 session_start();
 if (!isset($_SESSION["manager"])) {
