@@ -81,26 +81,8 @@ if (isset($_POST['shopID'])) {
     exit();
 }
 ?>
-<?php 
-// This block grabs the whole list for viewing
-$product_list = "";
-$sql = mysql_query("SELECT * FROM shop ");
-$productCount = mysql_num_rows($sql); // count the output amount
-if ($productCount > 0) {
-	while($row = mysql_fetch_array($sql)){ 
-             $id = $row["shopID"];
-			 $product_name = $row["name"];
-			 $country = $row["country"];
-			 $address = $row["address"];
-			 
-			 $product_list .= "Shop ID: $id - <strong>$product_name</strong> - $country - $address &nbsp; &nbsp; &nbsp; <a href='shops_edit.php?pid=$id'>edit</a> &bull; <a href='shops.php?deleteid=$id'>delete</a><br />";
-    }
-} else {
-	$product_list = "You have no products listed in your store yet";
-}
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Shops List</title>
@@ -108,6 +90,66 @@ if ($productCount > 0) {
 <!--
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
 -->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['table']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawTable);
+
+
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawTable() {
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+        data.addColumn('number', 'shopID');
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Country');
+        data.addColumn('string', 'Address');
+        data.addColumn('string', 'Edit/Delete');
+      data.addRows([
+        <?php
+
+          $product_list = '';
+          $sql = mysql_query("SELECT * FROM shop ");
+          $productCount = mysql_num_rows($sql); // count the output amount
+          if ($productCount > 0) {
+            while($row = mysql_fetch_array($sql)){ 
+                  $id = $row["shopID"];
+                   $name = $row["name"];
+                   $country = $row["country"];
+                   $address = $row["address"];
+
+                 $product_list .= '[' . 
+                 $id . ',' . 
+                 '\'' . $name . '\'' . ',' . 
+                 '\'' . $country . '\'' . ',' . 
+                 '\'' . $address . '\'' . ',' . 
+                 "\"<a href='shops_edit.php?pid=$id'>edit</a>  <a href='shops.php?deleteid=$id'>delete</a>\"
+                 " . '],'; 
+              }
+          }
+          echo  $product_list ;
+        ?>
+      ]);
+
+      // Instantiate and draw our table, passing in some options.
+      var table = new google.visualization.Table(document.getElementById('barformat_div'));
+      
+  
+  table.draw(data, {allowHtml: true, showRowNumber: false});
+
+       // set the width of the column with the title "Name" to 100px
+     var title = "Name";
+     var width = "200px";
+     $('.google-visualization-table-th:contains(' + title + ')').css('width', width);
+    }
+    </script>
+
 </head>
 
 <body>
@@ -119,7 +161,7 @@ if ($productCount > 0) {
     <div align="right" style="margin-right:32px;"><a href="shops.php#inventoryForm">+ Add New Shop Info</a></div>
 <div align="left" style="margin-left:24px;">
       <h2>Shops list</h2>
-      <?php echo $product_list; ?>
+     <div id='barformat_div'></div>
     </div>
     <hr />
     <a name="inventoryForm" id="inventoryForm"></a>

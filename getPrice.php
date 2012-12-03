@@ -12,16 +12,19 @@ include "storescripts/connect_to_mysql.php";
 	function get_price()
 	{
 		$product = $_POST['Barcode'];
-		$q = mysql_query("SELECT * FROM Inventory WHERE Barcode = '$product[0]' ");
-		if(mysql_num_rows($q) < 1)
+		$lower = $product * 100;
+		$upper = ($product * 100) + 99;
+		$q = mysql_query("SELECT * FROM Inventory WHERE Barcode <= $upper and Barcode >= $lower LIMIT 1");
+		if(mysql_num_rows($q) < 1){
 				die (mysql_error());
-		$row=mysql_fetch_array($q);
-		$price = $row["Selling_Price"];
+				return -1;
+			}
+		else {$row=mysql_fetch_array($q);
+			$price = $row["Selling_Price"];
 
-		mysql_close();
-		return $price;
+			mysql_close();
+			return $price;
+		}
 	}
-
 	echo get_price();
-
 ?>
