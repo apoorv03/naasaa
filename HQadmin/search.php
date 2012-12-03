@@ -11,7 +11,7 @@ $manager = preg_replace('#[^A-Za-z0-9]#i', '', $_SESSION["manager"]); // filter 
 $password = preg_replace('#[^A-Za-z0-9]#i', '', $_SESSION["password"]); // filter everything but numbers and letters
 // Run mySQL query to be sure that this person is an admin and that their password session var equals the database information
 // Connect to the MySQL database  
-include "../storescripts/connect_to_mysql.php"; 
+include "../storescripts/connect_to_mysql_HQ.php"; 
 $sql = mysql_query("SELECT * FROM admin WHERE id='$managerID' AND username='$manager' AND password='$password' LIMIT 1"); // query the person
 // ------- MAKE SURE PERSON EXISTS IN DATABASE ---------
 $existCount = mysql_num_rows($sql); // count the row nums
@@ -64,10 +64,10 @@ if (isset($_POST['button'])) {
 			 $Manufacturer1 = $row["Manufacturer"];
 			 $price1 = $row["Cost_Price"];
 			 $current1 = $row["Current_Stock"];
-			 $min1=$row["Minimum_Stock"];
-			 $Selling_Price1=$row["Selling_Price"];
+			 
+			 
 		
-		$barcode_list .= "Product ID: $id1 - <strong>$product_name1</strong> - $$price1 - $category1 - $Manufacturer1 - $current1 - $min1 - $Selling_Price1  <br />";
+		$barcode_list .= "Product ID: $id1 - <strong>$product_name1</strong> - $$price1 - $category1 - $Manufacturer1 - $current1   <br />";
 		
 	}
 	}else {
@@ -82,10 +82,9 @@ if (isset($_POST['button'])) {
 			 $Manufacturer2 = $row["Manufacturer"];
 			 $price2 = $row["Cost_Price"];
 			 $current2 = $row["Current_Stock"];
-			 $min2=$row["Minimum_Stock"];
-			 $Selling_Price2=$row["Selling_Price"];
+			 
 		
-		$barcode_list .= "Product ID: $id2 - <strong>$product_name2</strong> - $$price2 - $category2 - $Manufacturer2 - $current2 - $min2 - $Selling_Price2  <br />";
+		$barcode_list .= "Product ID: $id2 - <strong>$product_name2</strong> - $$price2 - $category2 - $Manufacturer2 - $current2 <br />";
 		
 	   }
 	  }
@@ -118,7 +117,7 @@ if (isset($_POST['button'])) {
     <hr />
     <a name="inventoryForm" id="inventoryForm"></a>
     <h3>
-    &darr; Search Inventory Item Form &darr;
+    &darr; Search Item Form &darr;
     </h3>
     <form action="search.php" enctype="multipart/form-data" name="myForm" id="myform" method="post">
     <table width="90%" border="0" cellspacing="0" cellpadding="6">
