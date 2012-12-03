@@ -9,9 +9,9 @@ include "storescripts/connect_to_mysql.php";
 ?>
 
 <?php
-	function get_price()
+	function get_price($product)
 	{
-		$product = $_POST['Barcode'];
+		
 		$lower = $product * 100;
 		$upper = ($product * 100) + 99;
 		$q = mysql_query("SELECT * FROM Inventory WHERE Barcode <= $upper and Barcode >= $lower LIMIT 1");
