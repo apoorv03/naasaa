@@ -69,11 +69,6 @@ function post_files($url,$file) {
     $response = curl_exec($ch);
     return $response;
 }
-
-
-
-
-
 	
 if(isset($_GET['Clear']))
 {
@@ -136,8 +131,6 @@ if(isset($_GET['download']))
 				}
 				
 				$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
-			
-		
 	}
 		
 		$row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";

@@ -33,13 +33,49 @@ ini_set('display_errors', '1');
 <title>Analytics</title>
  <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart2);
+      function drawChart2() {
+        var data = google.visualization.arrayToDataTable([
+          ['Day Of Month', 'Units Sold'],
+          <?php 
+          $sql = mysql_query("SELECT SUM(Unit_Sold) as s, Date 
+          FROM Transaction
+          Group by Date 
+          Order by s desc ");
+          $output = "";
+          $productCount = mysql_num_rows($sql); // count the output amount
+          while( $row = mysql_fetch_array($sql)){
+                $units = $row["s"];
+                $name = $row["Date"];
+                $output .= '[' .
+                '\''  . $name . '\'' . ',' . 
+                $units . ',' .
+                '],';
+              }
+            echo $output;
+          ?>
+        ]);
+
+        var options = {
+          title: 'Store Performance By Day For the Month',
+          hAxis: {title: 'Day', titleTextStyle: {color: 'blue'}}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('productsByDay'));
+        chart.draw(data, options);
+      }
+    </script>
+
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Product', 'Total Sales Revenue'],
+          ['Product', 'Total Sales'],
           <?php 
           $sql = mysql_query("SELECT SUM(Unit_Sold) as s, Product_Name 
           FROM Transaction
@@ -61,14 +97,14 @@ ini_set('display_errors', '1');
                 }
                 $output .= '[' .
                 '\''  . $name . '\'' . ',' . 
-                $units . ',' .
+                $units .
                 '],';
               } else {
                 $residual += $row["s"];
                 if ($count == $productCount){
                   $output .= '[' .
                   '\' Others \'' . ',' . 
-                  $units . ',' .
+                  $units .
                   '],';
                 }
               }
@@ -81,13 +117,64 @@ ini_set('display_errors', '1');
         ]);
 
         var options = {
-          title: 'Product Sales'
+          title: 'Product Statistics'
         };
-        var chart = new google.visualization.PieChart(document.getElementById('topProductsChart'));
+        var chart = new google.visualization.PieChart(document.getElementById('topProductChart'));
         chart.draw(data, options);
       }
     </script>
-  
+
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart3);
+      function drawChart3() {
+        var data = google.visualization.arrayToDataTable([
+          
+          <?php
+          $sql2 = mysql_query(" SELECT a1.Manufacturer as man, SUM( a2.s ) AS finalUnits 
+            FROM (
+            SELECT Barcode, Manufacturer
+            FROM Inventory
+            ) AS a1, (
+            SELECT SUM( Unit_Sold ) AS s, Barcode
+            FROM Transaction
+            GROUP BY Barcode
+            ) AS a2
+            WHERE a1.Barcode = a2.Barcode
+            GROUP BY a1.Manufacturer
+            ORDER BY finalUnits DESC");
+          $output = "['Manufacturer', 'Total Sales'],";
+          $productCount = mysql_num_rows($sql); // count the output amount
+
+          if ($productCount > 0) {
+            $count = 0;
+            $residual = 0;
+            while( $row = mysql_fetch_array($sql2)){
+              $count++;
+              if ($count < 9){
+                $units = $row["finalUnits"];
+                $name = $row["man"];
+                $output .= '[' .
+                '\''  . $name . '\'' . ',' . 
+                $units .
+                '],';
+              } 
+            }
+            echo $output;
+          } else{
+            echo '["No Manufacturers",     1]';  
+          }
+          ?>
+        ]);
+
+        var options = {
+          title: ' Manufacturer Statistics'
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('topManufacturerChart'));
+        chart.draw(data, options);
+      }
+    </script>
 </html>
 </head>
 
@@ -97,12 +184,14 @@ ini_set('display_errors', '1');
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="../bootstrap/js/bootstrap.min.js"></script>
   <?php include_once("../template_header.php");?>
-  <div id="pageContent"><br />
+  <div id="pageContent"><br>
   <div align="left" style="margin-left:24px;">
   </div>
   <div align="center" id="mainWrapper">
-
-  <div id="topProductsChart" style="width: 900px; height: 500px;"></div>  
+<h2> Dynamic Strategy Charts </h2>
+  <div id="topProductChart" style="width: 900px; height: 500px;"></div>  
+  <div id="topManufacturerChart" style="width: 900px; height: 500px;"></div>  
+  <div id="productsByDay" style="width: 900px; height: 500px;"></div>
   <?php include_once("../template_footer.php");?>
 </div>
 
