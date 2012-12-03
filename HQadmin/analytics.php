@@ -11,7 +11,7 @@ $manager = preg_replace('#[^A-Za-z0-9]#i', '', $_SESSION["manager"]); // filter 
 $password = preg_replace('#[^A-Za-z0-9]#i', '', $_SESSION["password"]); // filter everything but numbers and letters
 // Run mySQL query to be sure that this person is an admin and that their password session var equals the database information
 // Connect to the MySQL database  
-include "../storescripts/connect_to_mysql.php"; 
+include "../storescripts/connect_to_mysql_HQ.php"; 
 $sql = mysql_query("SELECT * FROM admin WHERE id='$managerID' AND username='$manager' AND password='$password' LIMIT 1"); // query the person
 // ------- MAKE SURE PERSON EXISTS IN DATABASE ---------
 $existCount = mysql_num_rows($sql); // count the row nums
@@ -36,142 +36,47 @@ ini_set('display_errors', '1');
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart2);
-      function drawChart2() {
-        var data = google.visualization.arrayToDataTable([
-          ['Day Of Month', 'Units Sold'],
-          <?php 
-          $sql = mysql_query("SELECT SUM(Unit_Sold) as s, Date 
-          FROM Transaction
-          Group by Date 
-          Order by s desc ");
-          $output = "";
-          $productCount = mysql_num_rows($sql); // count the output amount
-          while( $row = mysql_fetch_array($sql)){
-                $units = $row["s"];
-                $name = $row["Date"];
-                $output .= '[' .
-                '\''  . $name . '\'' . ',' . 
-                $units . ',' .
-                '],';
-              }
-            echo $output;
-          ?>
-        ]);
-
-        var options = {
-          title: 'Store Performance By Day For the Month',
-          hAxis: {title: 'Day', titleTextStyle: {color: 'blue'}}
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('productsByDay'));
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Product', 'Total Sales'],
-          <?php 
-          $sql = mysql_query("SELECT SUM(Unit_Sold) as s, Product_Name 
-          FROM Transaction
-          Group by Product_Name 
-          Order by s desc ");
-          $output = "";
-          $productCount = mysql_num_rows($sql); // count the output amount
-
-          if ($productCount > 0) {
-            $count = 0;
-            $residual = 0;
-            while( $row = mysql_fetch_array($sql)){
-              $count++;
-              if ($count < 8){
-                $units = $row["s"];
-                $name = $row["Product_Name"];
-                if (strlen($name) < 2){
-                  $name = "Ravintsara";
-                }
-                $output .= '[' .
-                '\''  . $name . '\'' . ',' . 
-                $units .
-                '],';
-              } else {
-                $residual += $row["s"];
-                if ($count == $productCount){
-                  $output .= '[' .
-                  '\' Others \'' . ',' . 
-                  $units .
-                  '],';
-                }
-              }
-            }
-            echo $output;
-          } else{
-            echo '["No Sales",     1]';  
-          }
-          ?>
-        ]);
-
-        var options = {
-          title: 'Product Statistics'
-        };
-        var chart = new google.visualization.PieChart(document.getElementById('topProductChart'));
-        chart.draw(data, options);
-      }
-    </script>
-
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart3);
-      function drawChart3() {
+      google.load("visualization", "1", {packages:["geochart"]});
+      google.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable([
           
           <?php
-          $sql2 = mysql_query(" SELECT a1.Manufacturer as man, SUM( a2.s ) AS finalUnits 
-            FROM (
-            SELECT Barcode, Manufacturer
-            FROM Inventory
-            ) AS a1, (
-            SELECT SUM( Unit_Sold ) AS s, Barcode
-            FROM Transaction
-            GROUP BY Barcode
-            ) AS a2
-            WHERE a1.Barcode = a2.Barcode
-            GROUP BY a1.Manufacturer
-            ORDER BY finalUnits DESC");
-          $output = "['Manufacturer', 'Total Sales'],";
+          $sql2 = mysql_query(
+            "SELECT sum(a.revenue) as rev, b.country FROM 
+
+              (select * from shopPerformance) a, 
+              (select * from shop) b
+              where a.shopID = b.shopID
+              group by country
+              order by rev desc");
+          $output = "['Country', 'Revenue'],";
           $productCount = mysql_num_rows($sql); // count the output amount
 
           if ($productCount > 0) {
-            $count = 0;
-            $residual = 0;
+            
             while( $row = mysql_fetch_array($sql2)){
-              $count++;
-              if ($count < 9){
-                $units = $row["finalUnits"];
-                $name = $row["man"];
+              
+              
+                $rev = $row["rev"];
+                $country = $row["country"];
                 $output .= '[' .
-                '\''  . $name . '\'' . ',' . 
-                $units .
+                '\''  . $country . '\'' . ',' . 
+                $rev .
                 '],';
-              } 
+               
             }
             echo $output;
           } else{
-            echo '["No Manufacturers",     1]';  
+            echo '["No Shops in Countries",     1]';  
           }
           ?>
         ]);
 
         var options = {
-          title: ' Manufacturer Statistics'
+          title: 'Highest Revenue Countries'
         };
-        var chart = new google.visualization.PieChart(document.getElementById('topManufacturerChart'));
+        var chart = new google.visualization.GeoChart(document.getElementById('topCountriesChart'));
         chart.draw(data, options);
       }
     </script>
@@ -188,10 +93,10 @@ ini_set('display_errors', '1');
   <div align="left" style="margin-left:24px;">
   </div>
   <div align="center" id="mainWrapper">
-<h2> Dynamic Strategy Charts </h2>
-  <div id="topProductChart" style="width: 900px; height: 500px;"></div>  
-  <div id="topManufacturerChart" style="width: 900px; height: 500px;"></div>  
-  <div id="productsByDay" style="width: 900px; height: 500px;"></div>
+<h2> Dynamic Strategy Charts </h2><br><br>
+<h3> Geo Distribution of Revenue </h3>
+ <div id="topCountriesChart" style="width: 900px; height: 500px;"></div>
+
   <?php include_once("../template_footer.php");?>
 </div>
 

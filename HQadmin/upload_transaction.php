@@ -54,8 +54,14 @@ foreach($lines as $line) {
 	$counter++;
 }
 $profits = $revenue - $cost;
+
 $sql = "INSERT INTO shopPerformance (month, shopID, revenue, profits, cost, unitsSold) 
 VALUES ('$Month', '$shopID', '$revenue', '$profits', '$cost', '$unitsSold')";
+
+if (mysql_num_rows(mysql_query("SELECT * from shopPerformance where shopID = '$shopID' and where month = '$Month' ")) > 0) {
+	$sql = "UPDATE shopPerformance SET  revenue = '$revenue', profits = '$profits', cost = '$cost', unitsSold = '$unitsSold' 
+	where shopID = '$shopID' and month = '$Month' ";
+}
 mysql_query($sql) or die(mysql_error());
 
 echo '<META HTTP-EQUIV="Refresh" Content="0; URL=transaction.php">';    
