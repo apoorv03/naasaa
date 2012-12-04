@@ -1,7 +1,9 @@
 <?php 
 
-session_start(); // Start session first thing in script
+// Start session first thing in script
 // Script Error Reporting
+session_start();
+
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 // Connect to the MySQL database  
@@ -14,67 +16,81 @@ include "storescripts/connect_to_mysql.php";
 	function getitem()
 	{
 		$total_price = 0;
-		$checkout_list = array(array('a', 'b'), array('c', 'd'));
+			//$checkout_list = array(array('100364', '3000'), array('101857', '1000'));
+			$checkout_list =$_POST['arr'];
+			$checkout_list1 = explode('|', $checkout_list);
+			$i = 0;
+			$checkout_list = array();
+			foreach($checkout_list1 as $checkout_l)
+				$checkout_list[] = explode(',', $checkout_l);
+			print_r($checkout_list);
+		
+		$sql2 = mysql_query("SELECT MAX(Transaction_ID) FROM Transaction ") or die (mysql_error());
+	$row = mysql_fetch_array($sql2);
+	$Transaction_ID=$row[0]+ 1;
 	
 		foreach ($checkout_list as $product)
-			echo $product[0] . " . " $product[1];
+			echo "$product[0] . " . " $product[1] <br/> ";
 
 		foreach ($checkout_list as $product) 
 		{
 			//if (!isset($product[1]) || $product[1] < 1)
 				//die (mysql_error());
-			$q = mysql_query("SELECT * FROM Inventory WHERE Barcode = '$product[0]' ");
-			if(mysql_num_rows($q) < 1)
-				{
-					echo "Barcode not found";
-					die (mysql_error());
-				}
+			$q = mysql_query("SELECT * FROM Inventory WHERE Barcode like '$product[0]%' LIMIT 1");
+				if(mysql_num_rows($q) < 1)
+					{
+						echo "Barcode not found";
+						die (mysql_error());
+					}
+					
 			$row=mysql_fetch_array($q);
+			$Barcode = $row['Barcode'];
 			$prod_name = $row['Product_Name'];
 			$qty = $row['Current_Stock'];
 			$price = $row['Selling_Price'];
-			$total_price = $total_price + ($qty * $price);
-							
+			$min= $row['Minimum_Stock'];
+			$total_price = $total_price + ($product[1] * $price);						
 			$getDate = new DateTime(null, new DateTimeZone('Asia/Singapore'));
             $Date = $getDate->format('Y-m-d');
 			
-			$ins = mysql_query("INSERT INTO Transaction VALUES('123456','1234','$prod_name,'$product[0]','$product[1]','$Date')");
-			if(mysql_affected_rows($ins) == 0)
-				echo "Value not inserted in Transaction";
+			$sql1 = mysql_query("INSERT INTO Transaction
+        VALUES('$Transaction_ID','1234','$prod_name','$Barcode','$product[1]','$Date')") or die (mysql_error());
+			
+			
+			//echo "$Transaction_ID','1234','$prod_name,'$Barcode','$product[1]','$Date  <br/> ";
+			
+			
 				
-				
-			if($qty < $product[1])
+					//Check that after sale, if current stock< minimum stock
+					// A restock will be done
+			if($qty - $product[1]< $min)
 				{
-					$diff = $product[1] - $qty;
-					$restk = mysql_query("INSERT INTO Restock (Barcode, Stock, Date) VALUES('$product[0]','$diff', '$Date')");
-					$new_qty = 0;
-				}
-			else
-					$new_qty = $qty - $product[1];
 					
-			$upd = mysql_query("UPDATE Inventory SET Current_Stock = '$new_qty' WHERE Barcode = '$product[0]'");
-			if(mysql_affected_rows($upd) == 0)
-				echo "Value not updated in Inventory";
+					$sql2 = mysql_query("INSERT INTO Restock 	(Barcode,Stock,Date)
+				VALUES('$Barcode','$min', '$Date')") or die (mysql_error());
+				
+				$qty=$qty - $product[1]+$min;
+				while($qty<$min)
+				{
+					$sql2 = mysql_query("INSERT INTO Restock 	(Barcode,Stock,Date)
+				VALUES('$Barcode','$min', '$Date')") or die (mysql_error());
+					$qty=$qty+$min;
+					
+				}
+				
+					
+				}
+				
+				$sql4 = mysql_query("UPDATE Inventory SET  Current_Stock='$qty' WHERE Barcode=$Barcode") or die (mysql_error());
+					echo "'$Barcode','$qty','$min' <br/> ";
+			
+		
+		}
 				
 			return $total_price;
 		}
 		
 		echo getitem();
-		/*if($new_qty > 0)
-			$q_update = mysql_query("INSERT INTO Transaction VALUES quantity = '$new_qty' WHERE Barcode='$product[0]'");
-		else
-			$q_update = mysql_query("DELETE FROM Transaction WHERE Barcode='$product[0]'");*/
-		//$price = $row["Selling_Price"];
-		//$sum = $sum + $price;
-
-		/*$product_name = $row["Product_Name"];
-			$price = $row["Selling_Price"];
-			$category = $row["Category"];
-			$Manufacturer=$row["Manufacturer"];
-			$Date="2012-09-30";
-			$Unit_Sold=$each_item['quantity'];*/
+		
 	
 ?>
-
-
-
