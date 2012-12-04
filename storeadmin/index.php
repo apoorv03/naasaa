@@ -208,6 +208,8 @@ if ($existCount == 0) { // evaluate the count
        <a href="endofday.php">End of day</a>
        <br>
        <a href="analytics.php">Analytics</a>
+       <br>
+       <a href="expiry.php">List of Expiring Products</a>
       </p>
       
 <form><input type="button" value="End Of Day" onclick="window.location='?download';"></form> 

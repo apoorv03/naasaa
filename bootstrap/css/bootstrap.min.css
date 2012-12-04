@@ -905,7 +905,7 @@ input[type="file"]:focus,input[type="radio"]:focus,input[type="checkbox"]:focus,
 .dropdown-menu{-webkit-box-shadow:0 2px 4px rgba(0, 0, 0, 0.8);-moz-box-shadow:0 2px 4px rgba(0, 0, 0, 0.8);box-shadow:0 2px 4px rgba(0, 0, 0, 0.8);}
 .alert,.alert .alert-heading,.alert-success,.alert-success .alert-heading,.alert-danger,.alert-error,.alert-danger .alert-heading,.alert-error .alert-heading,.alert-info,.alert-info .alert-heading{color:#eeeeee;text-shadow:none;border:none;}
 .label{color:#eeeeee;}
-.label,.alert{background-color:#666666;}
+.label,.alert{background-color:#666665;}
 .label:hover{background-color:#4d4d4d;}
 .label-important,.alert-danger,.alert-error{background-color:#cc0000;}
 .label-important:hover{background-color:#990000;}

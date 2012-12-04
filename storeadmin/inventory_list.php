@@ -133,7 +133,8 @@ if ($productCount > 0) {
       var data = new google.visualization.DataTable();
         data.addColumn('number', 'Barcode');
         data.addColumn('string', 'Name');
-        data.addColumn('number', 'Price');
+        data.addColumn('number', 'Cost Price');
+        data.addColumn('number', 'Selling Price');
         data.addColumn('string', 'Category');
         data.addColumn('string', 'Manufacturer');
         data.addColumn('number', 'quantity');
@@ -154,11 +155,13 @@ if ($productCount > 0) {
                  $Manufacturer = $row["Manufacturer"];
                  $price = $row["Cost_Price"];
                  $current = $row["Current_Stock"];
+                 $sellingPrice = $row["Selling_Price"];
 
                  $product_list .= '[' . 
                  $id . ',' . 
                  '\''  . $product_name2 . '\'' . ',' . 
                  $price . ',' . 
+                 $sellingPrice . ',' . 
                  '\'' . $category . '\'' . ',' . 
                  '\'' . $Manufacturer . '\'' . ',' . 
                  $current . ',' .
