@@ -54,17 +54,18 @@ enctype="multipart/form-data">
  </form>
  <form action="upload_transaction.php" method="post"
 enctype="multipart/form-data">
+
    <p>
   <label for="file">Transaction:</label>
   <input type="file" name="file" id="file" />
    </p>
    <p>
-     
-     <input type="submit" name="submit" value="Submit" />
+     <input type="submit" name="file" value="Submit" />
    </p>
  </form>
   <form action="upload_logbook1.php" method="post"
 enctype="multipart/form-data">
+
    <p>
   <label for="file">Logbook:</label>
   <input type="file" name="file" id="file" />

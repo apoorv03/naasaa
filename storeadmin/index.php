@@ -204,8 +204,6 @@ if ($existCount == 0) { // evaluate the count
       <a href="search.php">Search </a>
       <br />
        <a href="LCD.php">Mapping of LCD </a>
-       <br/>
-       <a href="endofday.php">End of day</a>
        <br>
        <a href="analytics.php">Analytics</a>
        <br>

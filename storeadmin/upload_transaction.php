@@ -7,7 +7,7 @@ $sql = "TRUNCATE TABLE `$table`";
 mysql_query($sql);
 
 
-$filename= mysql_real_escape_string($_FILES["file"]["tmp_name"]);
+$filename= mysql_real_escape_string($_FILES["upload"]["tmp_name"]);
 
 $lines = file($filename); // slurp file and split into an array by lines
 

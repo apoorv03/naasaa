@@ -8,8 +8,9 @@ $filename= mysql_real_escape_string($_FILES["file"]["tmp_name"]);
 
 $lines = file($filename); // slurp file and split into an array by lines
 $counter = 0;
+echo $counter;
 foreach($lines as $line) {
-	if ($counter<1){
+	if ($counter < 1){
 		$shopID = $line;
 	}
 	else{
@@ -20,26 +21,13 @@ foreach($lines as $line) {
 		$Quantity = mysql_real_escape_string(trim($parts[3]));
 		$Month = mysql_real_escape_string(trim($parts[4]));
 
-		/*$hash['name'] = "Vishesh";
-		$hash['barcode'] = 'JSHKJS';
-		$hash2['one']= $hash;
-		$hash2['two'] = "Vish21";
-		print_r($hash2['one']['name']);
-		foreach($hash2 as $key=>$value){
-			1st loop
-			key = one
-			$value['name'];
-			$value[]
-		}
-		$hash2[] = "Vishesh";*/
-
 		$revenue += $Selling_Price*$Quantity;
 		$cost += $Cost_Price*$Quantity;
 		$unitsSold += $Quantity;
 		
 		$sql2 = "INSERT INTO Transactions (shopID, Barcode, Cost, Price, Quantity, Month) 
 		VALUES ('$shopID', '$Barcode', '$Cost_Price', '$Selling_Price', '$Quantity', '$Month')";
-		
+		echo $sql2;
 		mysql_query($sql2) or die(mysql_error());
 		
 		$sql3 = mysql_query("SELECT Inventory.Current_Stock FROM Inventory where Barcode = '$Barcode'");
