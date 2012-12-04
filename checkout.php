@@ -17,20 +17,21 @@ include "storescripts/connect_to_mysql.php";
 	{
 		$total_price = 0;
 			//$checkout_list = array(array('100364', '3000'), array('101857', '1000'));
+			
 			$checkout_list =$_POST['arr'];
 			$checkout_list1 = explode('|', $checkout_list);
 			$i = 0;
 			$checkout_list = array();
 			foreach($checkout_list1 as $checkout_l)
 				$checkout_list[] = explode(',', $checkout_l);
-			print_r($checkout_list);
+			//print_r($checkout_list);
 		
 		$sql2 = mysql_query("SELECT MAX(Transaction_ID) FROM Transaction ") or die (mysql_error());
 	$row = mysql_fetch_array($sql2);
 	$Transaction_ID=$row[0]+ 1;
 	
-		foreach ($checkout_list as $product)
-			echo "$product[0] . " . " $product[1] <br/> ";
+		//foreach ($checkout_list as $product)
+		//	echo "$product[0] . " . " $product[1] <br/> ";
 
 		foreach ($checkout_list as $product) 
 		{
@@ -82,7 +83,7 @@ include "storescripts/connect_to_mysql.php";
 				}
 				
 				$sql4 = mysql_query("UPDATE Inventory SET  Current_Stock='$qty' WHERE Barcode=$Barcode") or die (mysql_error());
-					echo "'$Barcode','$qty','$min' <br/> ";
+					//echo "'$Barcode','$qty','$min' <br/> ";
 			
 		
 		}
