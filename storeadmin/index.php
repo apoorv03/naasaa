@@ -272,6 +272,11 @@ else if($row['Duration']<30)
 $sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
 
 
+
+header("location: index.php"); 
+
+
+
 }
 
 
