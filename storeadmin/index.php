@@ -51,10 +51,10 @@ if(isset($_GET['download']))
 	print_r(post_files($upload_url, "transaction.txt"));
 }
 if(isset($_GET['autoupload']))
-{
-	
+{	
+
     $ourFileName = "transaction.txt";
-    $ourFileHandle = fopen($ourFileName, 'w') or die("can't open file");
+    $ourFileHandle = fopen($ourFileName, 'w') or die("can't open file Saurabh");
     //fwrite($fh, $stringData);
 	$sql = mysql_query("SELECT Transaction.Barcode, Inventory.Cost_Price, Inventory.Selling_Price, Transaction.Unit_Sold, Transaction.Date FROM Transaction, Inventory WHERE Inventory.Barcode= Transaction.Barcode");
 	// echo "123456 \n";
