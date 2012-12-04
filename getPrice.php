@@ -21,7 +21,6 @@ include "storescripts/connect_to_mysql.php";
 			}
 		else {$row=mysql_fetch_array($q);
 			$price = $row["Selling_Price"];
-
 			mysql_close();
 			return $price;
 		}

@@ -100,42 +100,73 @@ if(isset($_GET['Demo']))
 }
 if(isset($_GET['download']))
 {
-	$sql = mysql_query(" SELECT Transaction.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,SUM(Transaction.Unit_Sold) FROM Inventory, Transaction WHERE Inventory.Barcode= Transaction.Barcode and Transaction.Date = '2012-09-30' GROUP BY Inventory.Barcode ");
-	while($row=mysql_fetch_array($sql)){
-			if($row[4] > $row[3]*0.3)
-			{
-				$row[1]=$row[1]*1.8;
-				$row[1]=number_format($row[1], 2, '.', '');
-			}
-				else
-				{
-					if($row[4] > $row[3]*0.2)
-					{
-						$row[1]=$row[1]*1.7;
-						$row[1]=number_format($row[1], 2, '.', ''); 
-					}
-					else
-						{
-								if($row[4] > $row[3]*0.1)
-							{
-								$row[1]=$row[1]*1.6;
-								$row[1]=number_format($row[1], 2, '.', ''); 
-							}
-							else
-							{
-								$row[1]=$row[1]*1.5;
-								$row[1]=number_format($row[1], 2, '.', ''); 
-							}
-						}
-						
-				}
-				
-				$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
-	}
-		
-		$row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";
+	$getDate = new DateTime(null, new DateTimeZone('Asia/Singapore'));
+       $Today_Date = $getDate->format('Y-m-d');
+$sql = mysql_query(" SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock FROM Inventory");
 	
-	exit(1);
+while($row=mysql_fetch_array($sql))
+{
+	
+//This is active pricing	
+if($row[2] < $row[3]* 1.1)
+{
+$row[1]=$row[1]*1.7;
+$row[1]=number_format($row[1], 2, '.', '');
+}
+else
+{
+	if($row[2] < $row[3]* 1.2)
+	{
+	$row[1]=$row[1]*1.6;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+	else
+	{
+	$row[1]=$row[1]*1.5;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+
+
+}
+
+$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
+}
+
+$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,DATEDIFF (Expiry.Expiry_Date,'$Today_Date') as Duration,Expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = Expiry.Barcode");
+	
+	
+	
+
+while($row=mysql_fetch_array($sql5))
+{
+ 
+if($row['Duration'] < 10 )
+{
+	$row[1]=$row[1] * 1;
+	$row[1]=number_format($row[1], 2, '.', '');
+}
+else if($row['Duration'] < 20 )
+	{
+	$row[1]=$row[1]*1.2;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+else if($row['Duration']<30)
+		{
+			$row[1]=$row[1]*1.3;
+			$row[1]=number_format($row[1], 2, '.', '');
+		}
+
+$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
+
+
+}
+
+
+
+
+$row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";
+
+exit(1);
 }
 $sql = mysql_query("SELECT * FROM admin WHERE id='$managerID' AND username='$manager' AND password='$password' LIMIT 1"); // query the person
 // ------- MAKE SURE PERSON EXISTS IN DATABASE ---------
