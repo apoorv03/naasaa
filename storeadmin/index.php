@@ -274,7 +274,7 @@ $sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode=
 
 
 header("location: index.php"); 
-
+exit;
 
 
 }
