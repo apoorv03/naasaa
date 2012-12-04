@@ -26,16 +26,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Inventory List</title>
- <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<!--
-<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
--->
-
+<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 
 <body>
@@ -53,7 +48,6 @@ enctype="multipart/form-data">
   <input type="file" name="file" id="file" />
    </p>
    <p>
-     
      <input type="submit" name="submit" value="Submit" />
      <br />
   </p>
