@@ -210,6 +210,80 @@ $row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";
 
 exit(1);
 }
+
+if (isset($_GET['price'])){
+	{
+	$getDate = new DateTime(null, new DateTimeZone('Asia/Singapore'));
+       $Today_Date = $getDate->format('Y-m-d');
+$sql = mysql_query(" SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock FROM Inventory");
+	
+while($row=mysql_fetch_array($sql))
+{
+	
+//This is active pricing	
+if($row[2] < $row[3]* 1.1)
+{
+$row[1]=$row[1]*1.7;
+$row[1]=number_format($row[1], 2, '.', '');
+}
+else
+{
+	if($row[2] < $row[3]* 1.2)
+	{
+	$row[1]=$row[1]*1.6;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+	else
+	{
+	$row[1]=$row[1]*1.5;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+
+
+}
+
+$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
+}
+
+$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,DATEDIFF (Expiry.Expiry_Date,'$Today_Date') as Duration,Expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = Expiry.Barcode");
+	
+	
+	
+
+while($row=mysql_fetch_array($sql5))
+{
+ 
+if($row['Duration'] < 10 )
+{
+	$row[1]=$row[1] * 1;
+	$row[1]=number_format($row[1], 2, '.', '');
+}
+else if($row['Duration'] < 20 )
+	{
+	$row[1]=$row[1]*1.2;
+	$row[1]=number_format($row[1], 2, '.', '');
+	}
+else if($row['Duration']<30)
+		{
+			$row[1]=$row[1]*1.3;
+			$row[1]=number_format($row[1], 2, '.', '');
+		}
+
+$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
+
+
+}
+
+
+
+
+$row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";
+
+exit(1);
+}
+}
+
+
 $sql = mysql_query("SELECT * FROM admin WHERE id='$managerID' AND username='$manager' AND password='$password' LIMIT 1"); // query the person
 // ------- MAKE SURE PERSON EXISTS IN DATABASE ---------
 $existCount = mysql_num_rows($sql); // count the row nums
@@ -252,7 +326,8 @@ if ($existCount == 0) { // evaluate the count
        <a href="expiry.php">List of Expiring Products</a>
       </p>
       
-<form><input type="button" value="End Of Day" onclick="window.location='?autoupload';"></form> 
+<form><input type="button" value="End Of Month" onclick="window.location='?autoupload';"></form> 
+<form><input type="button" value="Active Price" onclick="window.location='?price';"></form> 
 <form><input type="button" value="Clear " onclick="window.location='?Clear';"></form> 
 <form><input type="button" value="Logbook " onclick="window.location='?Logbook';"></form> 
 
