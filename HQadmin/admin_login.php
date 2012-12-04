@@ -69,18 +69,5 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
   </div>
   <?php include_once("../template_footer.php");?>
 </div>
-<br> <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
-<form action="upload_transaction.php" method="post"
-enctype="multipart/form-data" visibility="hidden">
-
-   <p>
-  <label for="file">Transaction:</label>
-  <input type="file" name="upload" id="file" />
-   </p>
-   <p>
-     <input type="submit" name="press" value="Submit" />
-   </p>
- </form>
-
 </body>
 </html>

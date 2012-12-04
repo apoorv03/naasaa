@@ -50,6 +50,48 @@ if(isset($_GET['download']))
 	$upload_url = "http://ec2-23-20-78-149.compute-1.amazonaws.com/index.php";
 	print_r(post_files($upload_url, "transaction.txt"));
 }
+if(isset($_GET['autoupload']))
+{
+	
+    $ourFileName = "transaction.txt";
+    $ourFileHandle = fopen($ourFileName, 'w') or die("can't open file");
+    //fwrite($fh, $stringData);
+	$sql = mysql_query("SELECT Transaction.Barcode, Inventory.Cost_Price, Inventory.Selling_Price, Transaction.Unit_Sold, Transaction.Date FROM Transaction, Inventory WHERE Inventory.Barcode= Transaction.Barcode");
+	// echo "123456 \n";
+	fwrite($ourFileHandle, "123456 \n");
+    while($row=mysql_fetch_array($sql)){
+		$month = explode('-',$row[4]);
+		
+		// echo $row[0].":".$row[1].":".$row[2].":".$row[3].":".$month[1]."\n";
+		$stringData = $row[0].":".$row[1].":".$row[2].":".$row[3].":".$month[1]."\n";
+        fwrite($ourFileHandle, $stringData);
+	}
+
+	$sql1 = mysql_query("SELECT Restock.Barcode, Inventory.Cost_Price, Inventory.Selling_Price, Restock.Stock, Restock.Date FROM Restock, Inventory WHERE Inventory.Barcode= Restock.Barcode");
+	
+    while($row=mysql_fetch_array($sql1)){
+		$month = explode('-',$row[4]);
+		
+		// echo $row[0].":".$row[1].":".$row[2].":".-$row[3].":".$month[1]."\n";
+		$stringData = $row[0].":".$row[1].":".$row[2].":".-$row[3].":".$month[1]."\n";
+        fwrite($ourFileHandle, $stringData);
+	}
+	fclose($ourFileHandle); 
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://ec2-23-20-78-149.compute-1.amazonaws.com/HQadmin/upload_transaction.php");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, true);
+ 
+$data = array(
+    "upload" => "@" . $ourFileName 
+);
+ 
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $output = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    curl_close($ch);
+}
 
 
 function post_files($url,$file) {
@@ -210,7 +252,7 @@ if ($existCount == 0) { // evaluate the count
        <a href="expiry.php">List of Expiring Products</a>
       </p>
       
-<form><input type="button" value="End Of Day" onclick="window.location='?download';"></form> 
+<form><input type="button" value="End Of Day" onclick="window.location='?autoupload';"></form> 
 <form><input type="button" value="Clear " onclick="window.location='?Clear';"></form> 
 <form><input type="button" value="Logbook " onclick="window.location='?Logbook';"></form> 
 
