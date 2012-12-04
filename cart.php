@@ -87,18 +87,14 @@ $row=mysql_fetch_array($sql3); // count the row nums
     		exit(1);
 		}
 		
-		if( $row[0]-$Unit_Sold < $row[1])
+		$row[0]=$row[0]-$Unit_Sold;
+		while($row[0] < $row[1])
 		{ 
 				$sql2 = mysql_query("INSERT INTO Restock 	(Barcode,Stock,Date)
 				VALUES('$item_id','$row[1]', '$Date')") or die (mysql_error());
-				
 				$row[0]=$row[0]+$row[1];
-				
-					$sql4 = mysql_query("UPDATE Inventory SET  Current_Stock='$row[0]' WHERE Barcode=$item_id") or die (mysql_error());
-		
+				$sql4 = mysql_query("UPDATE Inventory SET  Current_Stock='$row[0]' WHERE Barcode=$item_id") or die (mysql_error());
 		}
-		
-		$row[0]=$row[0]-$Unit_Sold;
 		$sql4 = mysql_query("UPDATE Inventory SET  Current_Stock='$row[0]' WHERE Barcode='$item_id'") or die (mysql_error());}
 	}
     unset($_SESSION["cart_array"]);
