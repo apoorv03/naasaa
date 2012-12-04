@@ -4,7 +4,7 @@ mysql_query($sql);
 mysql_query($sql2);
 mysql_query($sql3);
 
-$filename= mysql_real_escape_string($_FILES["file"]["tmp_name"]);
+$filename= mysql_real_escape_string($_FILES["upload"]["tmp_name"]);
 
 $lines = file($filename); // slurp file and split into an array by lines
 $counter = 0;
