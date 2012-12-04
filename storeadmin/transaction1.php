@@ -60,13 +60,13 @@ VALUES('$Barcode','$row[1]', '$Date')") or die (mysql_error());
 
 $row[0]=$row[0]-$Unit_Sold +$row[1];
 
-		while($row[0]<$row[1])
-				{
-					$sql2 = mysql_query("INSERT INTO Restock 	(Barcode,Stock,Date)
-				VALUES('$Barcode','$row[1]', '$Date')") or die (mysql_error());
-					$row[0]=$row[0]+$row[1];
-					
-				}
+while($row[0]<$row[1])
+{
+$sql2 = mysql_query("INSERT INTO Restock (Barcode,Stock,Date)
+VALUES('$Barcode','$row[1]', '$Date')") or die (mysql_error());
+$row[0]=$row[0]+$row[1];
+
+}
 
 $sql3 = mysql_query("UPDATE Inventory SET Current_Stock='$row[0]' WHERE Barcode= $Barcode") or die (mysql_error());
 
@@ -163,6 +163,75 @@ $product_list = "You have no transaction listed in your store yet";
 <!--
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
 -->
+<!--
+<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
+--><!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+// Load the Visualization API and the piechart package.
+google.load('visualization', '1', {'packages':['table']});
+// Set a callback to run when the Google Visualization API is loaded.
+google.setOnLoadCallback(drawTable);
+
+
+// Callback that creates and populates a data table,
+// instantiates the pie chart, passes in the data and
+// draws it.
+function drawTable() {
+
+// Create the data table.
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Transaction ID');
+data.addColumn('number', 'Cashier ID');
+data.addColumn('number', 'Barcode');
+data.addColumn('string', 'Name');
+data.addColumn('number', 'Unit Sold');
+data.addColumn('string', 'Date');
+data.addColumn('string', 'Edit/Delete/Total');
+data.addRows([
+<?php
+
+          $product_list = '';
+          $sql = mysql_query("SELECT Transaction.Transaction_ID, Transaction.Cashier_ID, Inventory.Product_Name, Inventory.Barcode,Transaction.Unit_Sold,Transaction.Date FROM Transaction, Inventory WHERE Transaction.Barcode=Inventory.Barcode LIMIT 30 ");
+          $productCount = mysql_num_rows($sql); // count the output amount
+          if ($productCount > 0) {
+            while($row = mysql_fetch_array($sql)){
+                 $Transaction_ID = $row[0];
+				$Cashier_ID = $row[1];
+				$Product_Name = $row[2];
+				$replace[] = ",";
+                $product_name2 = str_replace("'" , "" , $Product_Name);
+				$Barcode = $row[3];
+				$Unit_Sold = $row[4];
+				$Date = $row[5];
+
+                 $product_list .= '[' .
+                 $Transaction_ID . ',' .
+				  $Cashier_ID . ',' .
+				  $Barcode . ',' .
+                 '\'' . $product_name2 . '\'' . ',' .
+                 $Unit_Sold. ',' .
+				 '\'' . $Date . '\'' . ',' .
+                 "\"<a href='transaction1_edit.php?pid=$Transaction_ID& BC=$Barcode'>edit</a> &bull;<a href='transaction1.php?deleteid=$Transaction_ID'>delete</a> &bull;<a href='transaction_total.php?pid=$Transaction_ID'>total</a>\"
+" . '],';
+              }
+          }
+          echo $product_list ;
+        ?>
+]);
+
+// Instantiate and draw our table, passing in some options.
+var table = new google.visualization.Table(document.getElementById('barformat_div'));
+var formatter = new google.visualization.ArrowFormat({width: 30, base:2000});
+formatter.format(data, 5); // Apply formatter to sixth column
+table.draw(data, {allowHtml: true, showRowNumber: false});
+
+// set the width of the column with the title "Name" to 100px
+var title = "Name";
+var width = "200px";
+$('.google-visualization-table-th:contains(' + title + ')').css('width', width);
+}
+</script>
 </head>
 
 <body>
@@ -174,7 +243,7 @@ $product_list = "You have no transaction listed in your store yet";
 <div align="right" style="margin-right:32px;"><a href="transaction1.php#inventoryForm">+ Add New Transaction</a></div>
 <div align="left" style="margin-left:24px;">
 <h2>Transaction list</h2>
-<?php echo $product_list; ?>
+<div id='barformat_div'></div>
 </div>
 <hr />
 <a name="inventoryForm" id="inventoryForm"></a>

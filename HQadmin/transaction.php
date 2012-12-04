@@ -105,9 +105,70 @@ if ($productCount > 0) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Transaction</title>
  <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<!--
-<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen" />
--->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['table']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawTable);
+
+
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawTable() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+        data.addColumn('number', 'shopID');
+        data.addColumn('number', 'Month');
+        data.addColumn('number', 'Barcode');
+        data.addColumn('number', 'Units Sold');
+        data.addColumn('number', 'Price');
+      data.addRows([
+        <?php
+
+          $product_list = '';
+          $sql = mysql_query("SELECT * FROM Transactions ");
+          $productCount = mysql_num_rows($sql); // count the output amount
+          if ($productCount > 0) {
+            while($row = mysql_fetch_array($sql)){ 
+                 $barcode = $row["Barcode"];
+                 $shopID = $row["shopID"];
+                 $units = $row["Quantity"];
+                 $month = $row["Month"];
+                 $price = $row["Price"];
+
+                 
+                 
+
+                 $product_list .= '[' . 
+                 $shopID . ',' .
+                 $month . ',' .
+                 $barcode . ',' . 
+                 $units . ',' . 
+                 $price . ',' .
+                 '],'; 
+              }
+          }
+          echo  $product_list ;
+        ?>
+      ]);
+
+      // Instantiate and draw our table, passing in some options.
+      var table = new google.visualization.Table(document.getElementById('barformat_div'));
+       // Apply formatter to sixth column
+  
+  table.draw(data, {allowHtml: true, showRowNumber: false});
+
+       // set the width of the column with the title "Name" to 100px
+     var title = "Name";
+     var width = "200px";
+     $('.google-visualization-table-th:contains(' + title + ')').css('width', width);
+    }
+    </script>
 </head>
 
 <body>
@@ -119,7 +180,7 @@ if ($productCount > 0) {
     
 <div align="left" style="margin-left:24px;">
       <h2>Transactions</h2>
-      <?php echo $product_list; ?>
+       <div id='barformat_div'></div>
     </div>
     <hr />
     
