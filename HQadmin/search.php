@@ -81,7 +81,7 @@ ini_set('display_errors', '1');
                 $query .= " AND Product_Name like '%$product_name%' ";
               }
               if (strlen($Barcode) > 0){
-                $query .= " AND Barcode = $Barcode ";
+                $query .= " AND Barcode like  '%$Barcode%' ";
               }
               if (strlen($Category) > 0){
                 $query .= " AND Category like '%$Category%' ";
