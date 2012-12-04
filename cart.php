@@ -113,7 +113,7 @@ if (isset($_POST['item_to_adjust']) && $_POST['item_to_adjust'] != "") {
 	$item_to_adjust = $_POST['item_to_adjust'];
 	$quantity = $_POST['quantity'];
 	$quantity = preg_replace('#[^0-9]#i', '', $quantity); // filter everything but numbers
-	if ($quantity >= 1000) { $quantity = 999; }
+	if ($quantity >= 10000) { $quantity = 9999; }
 	if ($quantity < 1) { $quantity = 1; }
 	if ($quantity == "") { $quantity = 1; }
 	$i = 0;
@@ -188,7 +188,7 @@ if (!isset($_SESSION["cart_array"]) || count($_SESSION["cart_array"]) < 1) {
 		
 		$cartOutput .= '<td>$' . $price . '</td>';
 		$cartOutput .= '<td><form action="cart.php" method="post">
-		<input name="quantity" type="text" value="' . $each_item['quantity'] . '" size="1" maxlength="3" />
+		<input name="quantity" type="text" value="' . $each_item['quantity'] . '" size="1" maxlength="4" />
 		<input name="adjustBtn' . $item_id . '" type="submit" value="change" />
 		<input name="item_to_adjust" type="hidden" value="' . $item_id . '" />
 		</form></td>';
