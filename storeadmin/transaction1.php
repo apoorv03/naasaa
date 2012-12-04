@@ -53,12 +53,14 @@ echo '<META HTTP-EQUIV="Refresh" Content="0; URL=transaction1.php">';
      exit(1);
 }
 
-if( $row[0]-$Unit_Sold < $row[1])
+$row[0]=$row[0]-$Unit_Sold;
+
+if( $row[0]< $row[1])
 {
 $sql2 = mysql_query("INSERT INTO Restock (Barcode,Stock,Date)
 VALUES('$Barcode','$row[1]', '$Date')") or die (mysql_error());
 
-$row[0]=$row[0]-$Unit_Sold +$row[1];
+$row[0]=$row[0] +$row[1];
 
 while($row[0]<$row[1])
 {
@@ -68,14 +70,10 @@ $row[0]=$row[0]+$row[1];
 
 }
 
-$sql3 = mysql_query("UPDATE Inventory SET Current_Stock='$row[0]' WHERE Barcode= $Barcode") or die (mysql_error());
-
-
-
 }
 
-$row[0]=$row[0]-$Unit_Sold;
-$sql4 = mysql_query("UPDATE Inventory SET Current_Stock='$row[0]' WHERE Barcode= $Barcode") or die (mysql_error());
+
+$sql4 = mysql_query("UPDATE Inventory SET Current_Stock='$row[0]' WHERE Barcode= '$Barcode'") or die (mysql_error());
 
 // Add this product into the database now
 $sql = mysql_query("INSERT INTO Transaction
@@ -192,7 +190,7 @@ data.addRows([
 <?php
 
           $product_list = '';
-          $sql = mysql_query("SELECT Transaction.Transaction_ID, Transaction.Cashier_ID, Inventory.Product_Name, Inventory.Barcode,Transaction.Unit_Sold,Transaction.Date FROM Transaction, Inventory WHERE Transaction.Barcode=Inventory.Barcode LIMIT 30 ");
+          $sql = mysql_query("SELECT Transaction.Transaction_ID, Transaction.Cashier_ID, Inventory.Product_Name, Inventory.Barcode,Transaction.Unit_Sold,Transaction.Date FROM Transaction, Inventory WHERE Transaction.Barcode=Inventory.Barcode ");
           $productCount = mysql_num_rows($sql); // count the output amount
           if ($productCount > 0) {
             while($row = mysql_fetch_array($sql)){

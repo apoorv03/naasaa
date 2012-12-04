@@ -219,7 +219,7 @@ if (!isset($_SESSION["cart_array"]) || count($_SESSION["cart_array"]) < 1) {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Your Cart</title>
- <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+ <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <!--
 <link rel="stylesheet" href="style/style.css" type="text/css" media="screen" />
 -->
@@ -227,7 +227,7 @@ if (!isset($_SESSION["cart_array"]) || count($_SESSION["cart_array"]) < 1) {
 <body>
 <div align="center" id="mainWrapper">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
   <?php include_once("template_header.php");?>
   <div id="pageContent">
     <div style="margin:24px; text-align:left;">

@@ -130,8 +130,27 @@ if ($productCount > 0) {
       data.addRows([
         <?php
 
+
+      	if (isset($_POST['next']))
+      	{
+      		
+      		$_SESSION['counter'] = $_SESSION['counter'] + 1;
+      	}
+      	elseif (isset($_POST['back'])) 
+      	{
+      		if ($_SESSION['counter'] > 0){
+      			$_SESSION['counter'] = $_SESSION['counter'] - 1; 	
+      		}
+      	} 
+      	else 
+      	{
+      		$_SESSION['counter'] = 0;
+      	}
+		$start = $_SESSION['counter'];
+		$end = $start + 1;
           $product_list = '';
-          $sql = mysql_query("SELECT * FROM Transactions ");
+          $sql = mysql_query("SELECT * FROM Transactions WHERE TransactionID BETWEEN " . 30*$start . " AND ". 30*$end);
+          	
           $productCount = mysql_num_rows($sql); // count the output amount
           if ($productCount > 0) {
             while($row = mysql_fetch_array($sql)){ 
@@ -140,9 +159,6 @@ if ($productCount > 0) {
                  $units = $row["Quantity"];
                  $month = $row["Month"];
                  $price = $row["Price"];
-
-                 
-                 
 
                  $product_list .= '[' . 
                  $shopID . ',' .
@@ -180,12 +196,15 @@ if ($productCount > 0) {
     
 <div align="left" style="margin-left:24px;">
       <h2>Transactions</h2>
+
+      <form method = "post" action = "<?php echo $_SERVER['PHP_SELF']; ?>">
+      	<input type="submit" name ="next" value="next" > 
+      	<input type="submit" name ="back" value="back" > 
+      </form> 
+
        <div id='barformat_div'></div>
     </div>
     <hr />
-    
-  
-    
     <br />
   <br />
   </div>

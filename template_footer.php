@@ -1,1 +1,3 @@
-<div id="pageFooter">Copyright | <a href="storeadmin">Admin</a></div>
+     <div id="pageFooter">
+  <div align="center">Copyright | <a href="storeadmin">Admin</a></div>
+</div>

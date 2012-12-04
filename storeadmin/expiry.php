@@ -170,7 +170,7 @@ $('.google-visualization-table-th:contains(' + title + ')').css('width', width);
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 <?php include_once("../template_header.php");?>
 <div id="pageContent"><br />
-<div align="right" style="margin-right:32px;"><a href="inventory_list.php#inventoryForm">+ Add New Inventory Item</a></div>
+<div align="right" style="margin-right:32px;"></div>
 <div align="left" style="margin-left:24px;">
 <h2>Expiry list</h2>
 <div id='barformat_div'></div>

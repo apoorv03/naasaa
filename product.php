@@ -41,11 +41,16 @@ mysql_close();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $product_name; ?></title>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!--
 <link rel="stylesheet" href="style/style.css" type="text/css" media="screen" />
+-->
 </head>
 <body>
 <div align="center" id="mainWrapper">
   <?php include_once("template_header.php");?>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
   <div id="pageContent">
   <table width="100%" border="0" cellspacing="0" cellpadding="15">
   <tr>
