@@ -130,15 +130,15 @@ data.addRows([
                  $category = $row["Category"];
                  $Manufacturer = $row["Manufacturer"];
                  $Cprice = $row["Cost_Price"];
-				 $Sprice = $row["Selling_Price"];
+				        $Sprice = $row["Selling_Price"];
                  $current = $row["Current_Stock"];
-				 $expiry = $row["Expiry_Date"];
+				        $expiry = $row["Expiry_Date"];
 
                  $product_list .= '[' .
                  $id . ',' .
                  '\'' . $product_name2 . '\'' . ',' .
                  $Cprice . ',' .
-				$Sprice . ',' .
+				          $Sprice . ',' .
                  '\'' . $category . '\'' . ',' .
                  '\'' . $Manufacturer . '\'' . ',' .
                  $current . ',' .
