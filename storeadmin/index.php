@@ -203,7 +203,7 @@ if ($existCount == 0) { // evaluate the count
          <br />
       <a href="search.php">Search </a>
       <br />
-       <a href="lcd.php">Mapping of LCD </a>
+       <a href="LCD.php">Mapping of LCD </a>
        <br/>
        <a href="endofday.php">End of day</a>
        <br>
