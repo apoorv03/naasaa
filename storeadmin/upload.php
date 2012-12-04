@@ -58,11 +58,11 @@ enctype="multipart/form-data">
 enctype="multipart/form-data">
    <p>
   <label for="file">Transaction:</label>
-  <input type="file" name="file" id="file" />
+  <input type="file" name="upload" id="file" />
    </p>
    <p>
      
-     <input type="submit" name="submit" value="Submit" />
+     <input type="submit" name="press" value="Submit" />
    </p>
  </form>
  <form action="upload_lcd.php" method="post"
