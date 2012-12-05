@@ -174,9 +174,8 @@ else
 $sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
 }
 
-$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,DATEDIFF (Expiry.Expiry_Date,'$Today_Date') as Duration,Expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = Expiry.Barcode");
-	
-	
+$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,
+	DATEDIFF (Expiry.Expiry_Date,'$Today_Date') as Duration,Expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = Expiry.Barcode");
 	
 
 while($row=mysql_fetch_array($sql5))
@@ -242,7 +241,8 @@ if (isset($_GET['price'])) {
 			$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
 		}
 
-		$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,DATEDIFF (Expiry.Expiry_Date,'$Today_Date') as Duration,Expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = Expiry.Barcode");
+		$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,
+			DATEDIFF (expiry.Expiry_Date,'$Today_Date') as Duration,expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = expiry.Barcode");
 
 		while($row=mysql_fetch_array($sql5))
 		{

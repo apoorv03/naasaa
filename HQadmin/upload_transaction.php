@@ -37,6 +37,9 @@ foreach($lines as $line) {
 			$curUnits = $row[0];
 		}
 		$curUnits = $curUnits - $Quantity;
+		if ($curUnits < 0){
+			$curUnits = 5000;
+		}
 		$sql4 = mysql_query("UPDATE Inventory SET Current_Stock='$curUnits' WHERE Barcode='$Barcode'");
 	}	
 	$counter++;
