@@ -180,26 +180,22 @@ $sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.C
 
 while($row=mysql_fetch_array($sql5))
 {
- 
-if($row['Duration'] < 10 )
-{
-	$row[1]=$row[1] * 1;
-	$row[1]=number_format($row[1], 2, '.', '');
-}
-else if($row['Duration'] < 20 )
+	if($row['Duration'] < 10 )
+	{
+		$row[1]=$row[1] * 1;
+		$row[1]=number_format($row[1], 2, '.', '');
+	}
+	else if($row['Duration'] < 20 )
 	{
 	$row[1]=$row[1]*1.2;
 	$row[1]=number_format($row[1], 2, '.', '');
 	}
-else if($row['Duration']<30)
-		{
+	else if($row['Duration']<30)
+	{
 			$row[1]=$row[1]*1.3;
 			$row[1]=number_format($row[1], 2, '.', '');
-		}
-
+	}
 $sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
-
-
 }
 
 
@@ -262,8 +258,7 @@ if (isset($_GET['price'])) {
 						$row[1]=$row[1]*1.3;
 						$row[1]=number_format($row[1], 2, '.', '');
 					}
-		$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
-		exit;
+			$sql1 = mysql_query("UPDATE Inventory SET Selling_Price='$row[1]' WHERE Barcode='$row[0]'");
 		}
 		$row[0].":".$row[1].":".$row[2].":".$row[3].":".$row[4]."\n";
 		header("location: index.php"); 
