@@ -242,7 +242,7 @@ if (isset($_GET['price'])) {
 		}
 
 		$sql5 = mysql_query("SELECT Inventory.Barcode, Inventory.Cost_Price, Inventory.Current_Stock, Inventory.Minimum_Stock,
-			DATEDIFF (expiry.Expiry_Date,'$Today_Date') as Duration,expiry.Expiry_Date FROM Inventory,Expiry WHERE Inventory.Barcode = expiry.Barcode");
+			DATEDIFF (expiry.Expiry_Date,'$Today_Date') as Duration,expiry.Expiry_Date FROM Inventory,expiry WHERE Inventory.Barcode = expiry.Barcode");
 
 		while($row=mysql_fetch_array($sql5))
 		{
