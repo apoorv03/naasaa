@@ -17,8 +17,13 @@ function getitem()
 {
 $total_price = 0;
 //$checkout_list = array(array('100364', '3000'), array('101857', '1000'));
+$checkout_list = '';
 
-$checkout_list =$_POST['arr'];
+if(isset($_POST['arr']))
+	$checkout_list =$_POST['arr'];
+else
+	$checkout_list = $_GET['arr'];
+
 $checkout_list1 = explode('|', $checkout_list);
 $i = 0;
 $checkout_list = array();

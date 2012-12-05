@@ -11,7 +11,11 @@ include "storescripts/connect_to_mysql.php";
 <?php
 	function get_price()
 	{
-		$product = $_POST['barcode'];
+		$product = '';
+		if(!isset($_POST['barcode']))
+			$product = $_GET['barcode'];
+		else 
+			$product = $_POST['barcode'];
 		$lower = $product * 100;
 		$upper = ($product * 100) + 99;
 		$q = mysql_query("SELECT * FROM Inventory WHERE Barcode <= '$upper' and Barcode >= '$lower' LIMIT 1");
@@ -21,6 +25,8 @@ include "storescripts/connect_to_mysql.php";
 			}
 		else {$row=mysql_fetch_array($q);
 			$price = $row["Selling_Price"];
+			$name = $row["Product_Name"];
+			if(!isset($_POST['barcode'])) echo $name . ",";
 			mysql_close();
 			return $price;
 		}
